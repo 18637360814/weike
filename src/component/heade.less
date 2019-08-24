@@ -1,0 +1,23 @@
+@import '~@/css/index.less';
+
+.header{.bg(@mainblack);.h(20);
+    .main{max-width: 960px;margin:0 auto;.flex();justify-content: space-between;
+        h3{.fs(40);.c(@mainyellow);width: 15%;.lh(70);font-family: lx;}
+        nav{.flex();justify-content: space-between;width:85%;
+            .left{
+                .flex();justify-content: flex-start;width:50%;
+            }
+            .right{
+                .flex();justify-content: flex-end;width:50%
+            }
+            li{.fs(16);.c(@mainyellow);.lh(70);}
+        }
+    }
+}
+
+@font-face{
+    font-family: lx;
+    src:url('../assets/lx.ttf');
+}
+
+

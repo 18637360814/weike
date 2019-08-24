@@ -26,6 +26,8 @@ const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 
+// const CleanWebpackPlugin = require('clean-webpack-plugin');
+
 const postcssNormalize = require('postcss-normalize');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
@@ -131,7 +133,11 @@ module.exports = function(webpackEnv) {
     entry: './src/index.js',                  //  入口文件  默认为./src
     output: {                                 //  打包文件
       path: path.resolve(__dirname, 'dist'),
-      filename: 'bundle.js',
+      filename: '[name].bundle.js',
+    },
+    devServer: {
+      contentBase: './dist',
+      hot: true
     },
 
     module: {                                 //  loader 配置转换器 （webpack只识别js文件）
@@ -165,7 +171,9 @@ module.exports = function(webpackEnv) {
             {
               test: lessRegex,
               exclude: lessModuleRegex,
-              use: getStyleLoaders({ importLoaders: 3 }, 'less-loader'),          
+              use: getStyleLoaders(
+                { importLoaders: 3 }, 
+                'less-loader'),          
             },
             {
               test: lessModuleRegex,
@@ -175,8 +183,27 @@ module.exports = function(webpackEnv) {
                     modules: true,
                     getLocalIdent: getCSSModuleLocalIdent,
                 },
-                'less-loader'
+                 'less-loader'
               ),
+            },
+            {
+              test: cssRegex,
+              exclude: cssModuleRegex,
+              use: getStyleLoaders({
+                importLoaders: 1,
+                sourceMap: isEnvProduction && shouldUseSourceMap,
+              },
+              ),
+              sideEffects: true,
+            },
+            {
+              test: cssModuleRegex,
+              use: getStyleLoaders({
+                importLoaders: 1,
+                sourceMap: isEnvProduction && shouldUseSourceMap,
+                modules: true,
+                getLocalIdent: getCSSModuleLocalIdent,
+              }),
             },
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
@@ -225,24 +252,6 @@ module.exports = function(webpackEnv) {
               },
             },
 
-            {
-              test: cssRegex,
-              exclude: cssModuleRegex,
-              use: getStyleLoaders({
-                importLoaders: 1,
-                sourceMap: isEnvProduction && shouldUseSourceMap,
-              }),
-              sideEffects: true,
-            },
-            {
-              test: cssModuleRegex,
-              use: getStyleLoaders({
-                importLoaders: 1,
-                sourceMap: isEnvProduction && shouldUseSourceMap,
-                modules: true,
-                getLocalIdent: getCSSModuleLocalIdent,
-              }),
-            },
             {
               loader: require.resolve('file-loader'),
               exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
@@ -426,6 +435,11 @@ module.exports = function(webpackEnv) {
           // The formatter is invoked directly in WebpackDevServerUtils during development
           formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
+        // new CleanWebpackPlugin(['dist']),
+        // new HtmlWebpackPlugin({
+        //   title: 'Hot Module Replacement'
+        // }),
+        // new webpack.HotModuleReplacementPlugin()
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.

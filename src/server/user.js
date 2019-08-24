@@ -4,7 +4,7 @@ export async function queryCurrent(params) {
   let res = null;
   try {
     res = await request
-      .post('/res/api/users/user/findUserInfo', params)
+      .post('/rest/api/users/user/findUserInfo', params)
       .then(function (response) {
         return response;
       });

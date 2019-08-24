@@ -1,13 +1,17 @@
 import React ,{ Component } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom'
-import {renderRoutes} from 'react-router-config';
-import routeConfig from './routerconfig.js';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+
+import Three from '@/layout/threeHierarchy'
+import Two from '@/layout/twoHierarchy'
 
 class App extends Component {
   render(){
       return (
         <Router>
-            {renderRoutes(routeConfig)}
+          <Switch>
+            <Route exact path="/" component={Three}/> 
+            <Route exact path="/two" component={Two}/> 
+          </Switch>
         </Router>   
       )
   }
